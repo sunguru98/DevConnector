@@ -34,7 +34,7 @@ userSchema.statics = {
   authenticateUser: async (email, password) => {
     // Checking whether user's email exists
     const user = await User.findOne({ email })
-    if (!user) throw new Error('Incorrect credentials')
+    if (!user) throw new Error('Incorrect credentials email')
     // Verifying passwords are same
     const isMatched = await bcrypt.compare(password, user.password)
     if (!isMatched) throw new Error('Incorrect Credentials')

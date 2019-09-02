@@ -17,9 +17,9 @@ app.use(express.json({ extended: false }))
 
 // Integrating the routers
 app.use('/api/users', userRouter)
-app.use('/api/profile', authRouter)
+app.use('/api/profile', profileRouter)
 app.use('/api/posts', postsRouter)
-app.use('/api/auth', profileRouter)
+app.use('/api/auth', authRouter)
 
 app.get('/', (req, res) => res.send('Hello'))
 
