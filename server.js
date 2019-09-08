@@ -1,13 +1,11 @@
 const express = require('express')
+
+// Configuring Process environment variables
 const dotenv = require('dotenv')
 dotenv.config({ path: './.env' })
+
 // Database
 require('./db')
-// Routers
-const userRouter = require('./routes/userRouter')
-const authRouter = require('./routes/authRouter')
-const postsRouter = require('./routes/postsRouter')
-const profileRouter = require('./routes/profileRouter')
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -16,10 +14,10 @@ const PORT = process.env.PORT || 3000
 app.use(express.json({ extended: false }))
 
 // Integrating the routers
-app.use('/api/users', userRouter)
-app.use('/api/profile', profileRouter)
-app.use('/api/posts', postsRouter)
-app.use('/api/auth', authRouter)
+app.use('/api/users', require('./routes/userRouter'))
+app.use('/api/profile', require('./routes/profileRouter'))
+app.use('/api/posts', require('./routes/postsRouter'))
+app.use('/api/auth', require('./routes/authRouter'))
 
 app.get('/', (req, res) => res.send('Hello'))
 
