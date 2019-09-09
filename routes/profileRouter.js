@@ -39,8 +39,9 @@ router.post('/', authenticate,
         profileObj = await Profile.findOneAndUpdate({ user: req.user.id }, { $set: profile }).select('-__v')
         return res.send({ statusCode: 200, data: { profileObj }})
       }
-      // Else create a new profile
-      profileObj = new Profile()
+      // Else create a new profile and set the user property to the logged in user's id
+      profileObj = new Profile(profile)
+      profileObj.user = req.user.id
       await profileObj.save().select('-__v')
       res.send({ statusCode: 200, data: { profileObj }})
     } catch (err) {

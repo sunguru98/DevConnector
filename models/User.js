@@ -5,6 +5,10 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const gravatar = require('gravatar')
 
+// Models
+const Post = require('../models/Post')
+const Profile = require('../models/Profile')
+
 // Schema
 const userSchema = new mongoose.Schema({
   name: {
@@ -80,6 +84,14 @@ userSchema.pre('save', async function (next) {
     this.password = hashedPassword
   }
   // Move on to the creation process
+  next()
+})
+
+userSchema.pre('remove', async function (next) {
+  // There is no meaning if the posts and profile remains after user deletion
+  await Post.deleteMany({ user: this.id })
+  await Profile.deleteMany({ user: this.id })
+  // Move on to user deletion process
   next()
 })
 
