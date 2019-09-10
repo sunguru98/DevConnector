@@ -1,6 +1,5 @@
 const express = require('express')
 const authenticate = require('.././middleware/authenticate')
-const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 
 const router = express.Router()
@@ -17,6 +16,13 @@ router.post('/', async (req, res) => {
   } catch (err) {
     res.status(401).send({ statusCode: 401, message: err.message })
   }
+})
+
+// @route - GET/api/auth
+// @desc - Get auth user object
+// @access - Private
+router.get('/', authenticate, (req, res) => {
+  res.send({ statusCode: 200, data: { user: req.user }})
 })
 
 module.exports = router

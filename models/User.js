@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-
-const validator = require('validator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const gravatar = require('gravatar')
@@ -13,20 +11,17 @@ const Profile = require('../models/Profile')
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Name is required']
+    required: true,
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: true,
     unique: true,
-    validate (value) {
-      if (!validator.isEmail(value)) throw new Error('Email is invalid')
-    }
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
-    minlength: [8, 'Password must be atleast 8 characters long']
+    required: true,
+    minlength: 8
   },
   avatar: String,
   accessToken: String

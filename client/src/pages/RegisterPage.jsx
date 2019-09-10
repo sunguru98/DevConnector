@@ -1,7 +1,13 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { alertUser } from '../redux/actions/alertActions'
+import { registerUser } from '../redux/actions/authActions'
+import PropTypes from 'prop-types'
 
-const RegisterPage = () => {
+import AlertList from '../components/AlertList'
+
+const RegisterPage = ({ alertUser, registerUser }) => {
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -10,16 +16,21 @@ const RegisterPage = () => {
   })
 
   const handleSubmit = event => {
-    const { password, cPassword } = formState
+    const { password, cPassword, name, email } = formState
     event.preventDefault()
-    if (password !== cPassword) console.log('Passwords doesnt match')
-    else console.log(formState)
+    if (password !== cPassword) {
+      alertUser({message: 'Passwords do not match', alertType: 'danger' })
+      setFormState({...formState, password: '', cPassword: ''})
+    }
+    else 
+      registerUser({ name, email, password })
   }
 
   const handleChange = event => setFormState({...formState, [event.target.name]: event.target.value })
 
   return (
     <section className="container">
+      <AlertList />
       <h1 className="large text-primary">Sign Up</h1>
       <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
       <form className="form" onSubmit={handleSubmit}>
@@ -54,5 +65,10 @@ const RegisterPage = () => {
     </section>
   )
 }
+
+RegisterPage.propTypes = {
+  alertUser: PropTypes.func.isRequired,
+  registerUser: PropTypes.func.isRequired
+}
  
-export default RegisterPage
+export default connect(null, { alertUser, registerUser })(RegisterPage)
