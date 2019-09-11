@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { alertUser } from '../redux/actions/alertActions'
 import { registerUser } from '../redux/actions/authActions'
+import { selectAuthUser } from '../redux/selectors/authSelectors'
 import PropTypes from 'prop-types'
+import { createStructuredSelector } from 'reselect'
 
 import AlertList from '../components/AlertList'
 
-const RegisterPage = ({ alertUser, registerUser }) => {
+const RegisterPage = ({ alertUser, registerUser, user, history }) => {
+  
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -22,13 +25,17 @@ const RegisterPage = ({ alertUser, registerUser }) => {
       alertUser({message: 'Passwords do not match', alertType: 'danger' })
       setFormState({...formState, password: '', cPassword: ''})
     }
-    else 
+    else {
       registerUser({ name, email, password })
+      if (user) history.push('/dashboard')
+      else setFormState({ ...formState, email: '', password: '', cPassword: '' }) 
+    }
   }
 
   const handleChange = event => setFormState({...formState, [event.target.name]: event.target.value })
 
   return (
+    user ? <Redirect to='/dashboard' /> :
     <section className="container">
       <AlertList />
       <h1 className="large text-primary">Sign Up</h1>
@@ -70,5 +77,9 @@ RegisterPage.propTypes = {
   alertUser: PropTypes.func.isRequired,
   registerUser: PropTypes.func.isRequired
 }
- 
-export default connect(null, { alertUser, registerUser })(RegisterPage)
+
+const mapStateToProps = createStructuredSelector({
+  user: selectAuthUser
+})
+
+export default connect(mapStateToProps, { alertUser, registerUser })(RegisterPage)

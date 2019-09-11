@@ -5,7 +5,9 @@ import { createStructuredSelector } from 'reselect'
 import { selectAlerts } from '../redux/selectors/alertSelectors'
 
 const AlertList = ({ alerts }) => (
-  alerts.length > 0 ? alerts.map(({ message, alertType, id }) => <div key={id} className={`alert alert-${alertType}`}>{message}</div>) : null
+  alerts.length > 0 ? 
+    alerts.map(({ message, alertType, id }) => <div key={id} className={`alert alert-${alertType}`}>{message}</div>) 
+    : null
 )
 
 const mapStateToProps = createStructuredSelector({

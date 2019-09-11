@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import AlertList from '../components/AlertList'
+import { connect } from 'react-redux'
+import { loginUser } from '../redux/actions/authActions'
+import PropTypes from 'prop-types'
+import { createStructuredSelector } from 'reselect'
+import { selectAuthUser } from '../redux/selectors/authSelectors'
+import { Redirect } from 'react-router-dom'
 
-const LoginPage = (props) => {
+
+const LoginPage = ({ loginUser, history, user }) => {
   const [formState, setFormState] = useState({
     email: '',
     password: '',
@@ -9,16 +17,18 @@ const LoginPage = (props) => {
 
   const handleSubmit = event => {
     event.preventDefault()
-    console.log('Login form subitted')
+    const { email, password } = formState
+    loginUser({ email, password })
+    if (!loginUser) setFormState({...formState, password: ''})
+    else history.push('/dashboard')
   }
 
   const handleChange = event => setFormState({...formState, [event.target.name]: event.target.value })
 
   return (
+    user !== null ? <Redirect to='/dashboard' /> :
     <section className="container">
-      <div className="alert alert-danger">
-        Invalid credentials
-      </div>
+      <AlertList />
       <h1 className="large text-primary">Sign In</h1>
       <p className="lead"><i className="fas fa-user"></i> Sign into Your Account</p>
       <form className="form" onSubmit={ handleSubmit }>
@@ -37,6 +47,7 @@ const LoginPage = (props) => {
             type="password"
             placeholder="Password"
             name="password"
+            required
           />
         </div>
         <input type="submit" className="btn btn-primary" value="Login" />
@@ -47,5 +58,12 @@ const LoginPage = (props) => {
     </section>
   )
 }
- 
-export default LoginPage
+
+LoginPage.propTypes = {
+  loginUser: PropTypes.func.isRequired
+}
+
+const mapStateToProps = createStructuredSelector({
+  user: selectAuthUser
+})
+export default connect(mapStateToProps, { loginUser })(LoginPage)

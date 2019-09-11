@@ -25,4 +25,19 @@ router.get('/', authenticate, (req, res) => {
   res.send({ statusCode: 200, data: { user: req.user }})
 })
 
+// @route - DELETE/api/auth/
+// @desc - Logout user
+// @access - Private
+router.delete('/', authenticate, async (req, res) => {
+  const user = req.user
+  user.accessToken = null
+  try {
+    await user.save()
+    res.send({ statusCode: 200, data: 'User logged out successfully '})
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send({ statusCode: 500, message: 'Server Error' })
+  }
+})
+
 module.exports = router

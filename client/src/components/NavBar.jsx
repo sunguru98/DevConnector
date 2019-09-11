@@ -1,19 +1,47 @@
 import React from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
+import { logoutUser } from '../redux/actions/authActions'
+import { selectAuthUser, selectAuthAccessToken } from '../redux/selectors/authSelectors'
+import PropTypes from 'prop-types'
 
-const NavBar = (props) => {
+const NavBar = ({ user, accessToken, logoutUser, history }) => {
+  
+  const handleClick = () => {
+    logoutUser(accessToken)
+    history.push('/')
+  }
+
   return (
     <nav className="navbar bg-dark">
       <h1>
         <Link to='/'><i className="fas fa-code"></i> DevConnector</Link>
       </h1>
-      <ul>
+      { !user ? <ul>
         <li><a href="profiles.html">Developers</a></li>
         <li><NavLink to='/register' activeClassName='active'>Register</NavLink></li>
         <li><NavLink to='/login' activeClassName='active'>Login</NavLink></li>
-      </ul>
+      </ul> : <ul>
+        <li> 
+          <span onClick={ handleClick }>
+            <i className="fas fa-sign-out-alt"></i>{' '} <span className="hide-sm">Logout</span>
+          </span>
+        </li>
+        {/* <li><NavLink to='/register' activeClassName='active'>Register</NavLink></li>
+        <li><NavLink to='/login' activeClassName='active'>Login</NavLink></li> */}
+      </ul> }
     </nav>
   )
 }
+
+NavBar.propTypes = {
+  logoutUser: PropTypes.func.isRequired
+}
  
-export default NavBar
+const mapStateToProps = createStructuredSelector({
+  user: selectAuthUser,
+  accessToken: selectAuthAccessToken
+})
+
+export default withRouter(connect(mapStateToProps, { logoutUser })(NavBar))
