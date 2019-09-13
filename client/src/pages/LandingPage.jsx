@@ -3,11 +3,13 @@ import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { selectAuthUser } from '../redux/selectors/authSelectors'
+import { Helmet } from 'react-helmet'
 
 const LandingPage = ({ user }) => {
   return (
     user ? <Redirect to='/dashboard' /> :
     <section className="landing">
+      <Helmet><title>DevConnector - Home</title></Helmet>
       <div className="dark-overlay">
         <div className="landing-inner">
           <h1 className="x-large">Developer Connector</h1>

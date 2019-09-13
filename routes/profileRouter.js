@@ -99,7 +99,7 @@ router.get('/user/:userId', async (req, res) => {
 })
 
 // @route - DELETE api/profile/:userId
-// @desc - Get all profiles
+// @desc - Delete the user's profile
 // @access - Private (Header auth)
 router.delete('/', authenticate, async (req, res) => {
   // Get the user id first
@@ -152,9 +152,9 @@ router.put('/education', authenticate,
   [
     check('school', 'Education school is required').not().isEmpty(), 
     check('degree', 'Education degree is required').not().isEmpty(),
-    check('fieldOfStudy', 'Education is fieldOfStudy required').not().isEmpty(),
-    check('current', 'Experience is Current required').not().isEmpty(),
-    check('from', 'Experience from is required').not().isEmpty()
+    check('fieldOfStudy', 'Education fieldOfStudy is required').not().isEmpty(),
+    check('current', 'Education Current is required').not().isEmpty(),
+    check('from', 'Education from is required').not().isEmpty()
   ],
   async (req, res) => {
     const errors = validationResult(req)

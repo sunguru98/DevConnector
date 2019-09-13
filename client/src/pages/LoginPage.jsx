@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { createStructuredSelector } from 'reselect'
 import { selectAuthUser } from '../redux/selectors/authSelectors'
 import { Redirect } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
 
 const LoginPage = ({ loginUser, history, user }) => {
@@ -28,6 +29,7 @@ const LoginPage = ({ loginUser, history, user }) => {
   return (
     user !== null ? <Redirect to='/dashboard' /> :
     <section className="container">
+      <Helmet><title>DevConnector - Login</title></Helmet>
       <AlertList />
       <h1 className="large text-primary">Sign In</h1>
       <p className="lead"><i className="fas fa-user"></i> Sign into Your Account</p>

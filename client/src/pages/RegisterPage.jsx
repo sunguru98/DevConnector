@@ -6,6 +6,7 @@ import { registerUser } from '../redux/actions/authActions'
 import { selectAuthUser } from '../redux/selectors/authSelectors'
 import PropTypes from 'prop-types'
 import { createStructuredSelector } from 'reselect'
+import { Helmet } from 'react-helmet'
 
 import AlertList from '../components/AlertList'
 
@@ -37,6 +38,7 @@ const RegisterPage = ({ alertUser, registerUser, user, history }) => {
   return (
     user ? <Redirect to='/dashboard' /> :
     <section className="container">
+      <Helmet><title>DevConnector - Register</title></Helmet>  
       <AlertList />
       <h1 className="large text-primary">Sign Up</h1>
       <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>

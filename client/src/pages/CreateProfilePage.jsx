@@ -8,6 +8,7 @@ import { createProfile } from '../redux/actions/profileActions'
 import { createStructuredSelector } from 'reselect'
 import { selectProfileUserProfile, selectProfileProfileLoading } from '../redux/selectors/profileSelectors'
 import { Redirect } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
 const CreateProfilePage = ({ accessToken, createProfile, history, match: { path }, profile, profileLoading }) => {
   const [formData, setFormData] = useState(path === '/create-profile' ? {
@@ -30,6 +31,7 @@ const CreateProfilePage = ({ accessToken, createProfile, history, match: { path 
     profile && path === '/create-profile' ? <Redirect to='/dashboard' /> :
     profile && !profileLoading ? <Spinner/> :
     <section className='container'>
+      <Helmet><title>DevConnector - {path === '/create-profile' ? 'Create' : 'Edit' } Profile</title></Helmet>
       <AlertList />
       <h1 className="large text-primary">
         { path === '/create-profile' ? 'Create Your Profile' : 'Edit Your Profile' }
