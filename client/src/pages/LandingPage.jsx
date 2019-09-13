@@ -1,8 +1,12 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
+import { selectAuthUser } from '../redux/selectors/authSelectors'
 
-const LandingPage = (props) => {
+const LandingPage = ({ user }) => {
   return (
+    user ? <Redirect to='/dashboard' /> :
     <section className="landing">
       <div className="dark-overlay">
         <div className="landing-inner">
@@ -20,5 +24,9 @@ const LandingPage = (props) => {
     </section>
   )
 }
+
+const mapStateToProps = createStructuredSelector({
+  user: selectAuthUser
+})
  
-export default LandingPage
+export default connect(mapStateToProps)(LandingPage)

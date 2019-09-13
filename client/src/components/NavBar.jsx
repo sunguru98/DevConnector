@@ -9,8 +9,7 @@ import PropTypes from 'prop-types'
 const NavBar = ({ user, accessToken, logoutUser, history }) => {
   
   const handleClick = () => {
-    logoutUser(accessToken)
-    history.push('/')
+    logoutUser(accessToken, history)
   }
 
   return (

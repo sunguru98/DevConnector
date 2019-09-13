@@ -40,7 +40,7 @@ img {
   margin: auto;
   overflow: hidden;
   padding: 0 2rem;
-  margin-top: 6rem;
+  margin-top: 3rem;
   margin-bottom: 3rem;
 }
 
@@ -304,8 +304,6 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 0.7rem 2rem;
-  position: fixed;
-  z-index: 1;
   width: 100%;
   top: 0;
   border-bottom: solid 1px var(--primary-color);
@@ -493,7 +491,7 @@ button {
 /* Mobile Styles */
 @media (max-width: 700px) {
   .container {
-    margin-top: 8rem;
+    margin-top: 5rem;
   }
 
   .hide-sm {

@@ -45,6 +45,14 @@ const profileSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+profileSchema.methods = {
+  toJSON: function () {
+    const profile = this.toObject()
+    delete profile.__v
+    return profile
+  }
+}
+
 const Profile = mongoose.model('profile', profileSchema)
 
 module.exports = Profile

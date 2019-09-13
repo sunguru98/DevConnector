@@ -30,20 +30,20 @@ router.post('/', authenticate,
                       user: req.user.id,
                       social: { youtube, facebook, twitter, instagram, linkedIn } 
                     }
-    profile.skills = skills.split(',').map(skill => skill.trim())
+    profile.skills = skills.includes(',') ? skills.split(',').map(skill => skill.trim()) : skills
     try {
       // Find the profile if it exists
       let profileObj = await Profile.findOne({ user: req.user.id })
       if (profileObj) {
         // If yes means, just update it
         profileObj = await Profile.findOneAndUpdate({ user: req.user.id }, { $set: profile }).select('-__v')
-        return res.send({ statusCode: 200, data: { profileObj }})
+        return res.send({ statusCode: 200, profile: { profileObj }})
       }
       // Else create a new profile and set the user property to the logged in user's id
       profileObj = new Profile(profile)
       profileObj.user = req.user.id
-      await profileObj.save().select('-__v')
-      res.send({ statusCode: 200, data: { profileObj }})
+      await profileObj.save()
+      res.send({ statusCode: 200, profile: { profileObj }})
     } catch (err) {
       console.log(err.message)
       res.status(500).send({ statusCode: 500, message: 'Server Error. Please try again' })
@@ -74,7 +74,7 @@ router.get('/me',
       // If there is no profile means throw err
       if (!profile) return res.status(404).send({ statusCode: 404, message: `Profile doesn't exist` })
       // Else return the profile
-      res.send({ statusCode: 200, data: { profile }})
+      res.send({ statusCode: 200,  profile })
     } catch (err) {
       res.status(500).send({ statusCode: 500, message: 'Server Error. Please try again' })
     }
@@ -90,7 +90,7 @@ router.get('/user/:userId', async (req, res) => {
     // If there is no profile means throw err
     if (!profileByUser) return res.status(404).send({ statusCode: 404, message: `Profile doesn't exist` })
     // Else return the profile
-    res.send({ statusCode: 200, data: { profile: profileByUser }})
+    res.send({ statusCode: 200, profile: profileByUser })
   } catch (error) {
     console.error(error)
     if (error.name === 'CastError') return res.status(404).send({ statusCode: 404, message: `Profile doesn't exist` })
@@ -136,7 +136,7 @@ router.put('/experience', authenticate,
       // Save the updated document
       await profile.save()
       // Send the whole profile data back along with experiences
-      res.send({ statusCode: 200, data: { profile } })
+      res.send({ statusCode: 200, profile })
     } catch (err) {
       console.error(err.message)
       res.status(500).send({ statusCode: 500, message: 'Server Error' })
@@ -170,7 +170,7 @@ router.put('/education', authenticate,
       // Save the updated document
       await profile.save()
       // Send the whole profile data back along with educations
-      res.send({ statusCode: 200, data: { profile } })
+      res.send({ statusCode: 200, profile })
     } catch (err) {
       console.error(err.message)
       res.status(500).send({ statusCode: 500, message: 'Server Error' })
@@ -191,7 +191,7 @@ router.delete('/experience/:expId', authenticate, async (req, res) => {
     if (expIndex === -1) return res.status(404).send({ statusCode: 404, message: 'Experience not found' })
     profile.experience.splice(expIndex, 1)
     await profile.save()
-    res.send({ statusCode: 200, data: { profile }})
+    res.send({ statusCode: 200, profile })
   } catch (err) {
     console.log(err.message)
     if (err.type === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
@@ -212,7 +212,7 @@ router.delete('/education/:eduId', authenticate, async (req, res) => {
     // Delete the education
     profile.education.splice(eduIndex, 1)
     await profile.save()
-    res.send({ statusCode: 200, data: { profile }})
+    res.send({ statusCode: 200, profile })
   } catch (err) {
     console.log(err.message)
     if (err.type === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
@@ -233,7 +233,7 @@ router.get('/github/:username', async (req, res) => {
         client_secret: process.env.GITHUB_SECRET      
       }
     })
-    res.send({ statusCode: 200, data: { repos: githubRepos.data } })
+    res.send({ statusCode: 200, repos: githubRepos.data })
   } catch (err) {
     console.error(err.message)
     if (err.message === 'Request failed with status code 404')
