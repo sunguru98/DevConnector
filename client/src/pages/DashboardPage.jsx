@@ -6,13 +6,13 @@ import { Redirect, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Moment from 'react-moment'
 import { Helmet } from 'react-helmet'
-import { getCurrentUserProfile } from '../redux/actions/profileActions'
+import { getCurrentUserProfile, deleteProfileAttribute, deleteProfile } from '../redux/actions/profileActions'
 
 import { selectAuthUser, selectAuthAccessToken } from '../redux/selectors/authSelectors'
 import { createStructuredSelector } from 'reselect'
 import { selectProfileUserProfile, selectProfileProfileLoading } from '../redux/selectors/profileSelectors'
 
-const DashboardPage = ({ user, getCurrentUserProfile, accessToken, profile, profileLoading }) => {
+const DashboardPage = ({ history, user, getCurrentUserProfile, accessToken, profile, profileLoading, deleteProfileAttribute, deleteProfile }) => {
   useEffect(() => {
     getCurrentUserProfile(accessToken)
   }, [getCurrentUserProfile, accessToken])
@@ -59,7 +59,7 @@ const DashboardPage = ({ user, getCurrentUserProfile, accessToken, profile, prof
                           <Moment format='DD/MM/YYYY'>{exp.from}</Moment> - {exp.current ? 'Present' : <Moment format='DD/MM/YYYY'>exp.to</Moment>}
                         </td>
                         <td>
-                          <button className="btn btn-danger">
+                          <button onClick={() => deleteProfileAttribute(accessToken, exp._id, 'exp')} className="btn btn-danger">
                             Delete
                           </button>
                         </td>
@@ -88,12 +88,12 @@ const DashboardPage = ({ user, getCurrentUserProfile, accessToken, profile, prof
                   { profile.education.map(edu => (
                     <tr key={edu._id}>
                       <td>{edu.school}</td>
-                      <td class="hide-sm">{edu.degree}</td>
-                      <td class="hide-sm">
+                      <td className="hide-sm">{edu.degree}</td>
+                      <td className="hide-sm">
                       <Moment format='DD/MM/YYYY'>{edu.from}</Moment> - {edu.current ? 'Present' : <Moment format='DD/MM/YYYY'>{edu.to}</Moment>}
                       </td>
                       <td>
-                        <button class="btn btn-danger">
+                        <button onClick={() => deleteProfileAttribute(accessToken, edu._id, 'edu')} className="btn btn-danger">
                           Delete
                         </button>
                       </td>
@@ -104,9 +104,9 @@ const DashboardPage = ({ user, getCurrentUserProfile, accessToken, profile, prof
             </Fragment>
           }
           <div className="my-2">
-            <button className="btn btn-danger">
-                <i className="fas fa-user-minus"></i>
-                Delete My Account
+            <button onClick={() => deleteProfile(accessToken, history)} className="btn btn-danger">
+                <i className="fas fa-user-minus"></i>{' '}
+                Delete My Profile
             </button>
           </div>
         </section>
@@ -117,7 +117,9 @@ DashboardPage.propTypes = {
   getCurrentUserProfile: PropTypes.func.isRequired,
   accessToken: PropTypes.string.isRequired,
   profile: PropTypes.object,
-  // isLoading: PropTypes.bool.isRequired
+  profileLoading: PropTypes.bool.isRequired,
+  deleteProfile: PropTypes.func.isRequired,
+  deleteProfileAttribute: PropTypes.func.isRequired
 }
 
 const mapStateToProps = createStructuredSelector({
@@ -127,4 +129,4 @@ const mapStateToProps = createStructuredSelector({
   profileLoading: selectProfileProfileLoading
 })
 
-export default connect(mapStateToProps, { getCurrentUserProfile })(DashboardPage)
+export default connect(mapStateToProps, { deleteProfile, getCurrentUserProfile, deleteProfileAttribute })(DashboardPage)

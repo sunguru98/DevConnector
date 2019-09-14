@@ -56,7 +56,7 @@ router.post('/', authenticate,
 router.get('/', async (req, res) => {
   try {
     const allProfiles = await Profile.find().populate('user', ['name', 'avatar'])
-    res.send({ statusCode: 200, data: { profiles: allProfiles }})
+    res.send({ statusCode: 200, profiles: allProfiles })
   } catch (err) {
     console.error(err.message)
     res.status(500).send({ statusCode: 500, message: 'Server Error. Please try again' })
@@ -178,16 +178,16 @@ router.put('/education', authenticate,
   }
 )
 
-// @route - DELETE api/profile/experience/:expId
+// @route - DELETE api/profile/experience/:id
 // @desc - Delete an experience from array in profile
 // @access - Private (Header auth)
-router.delete('/experience/:expId', authenticate, async (req, res) => {
-  const expId = req.params.expId
-  if (!expId) return res.status(400).send({ statusCode: 400, message: 'Invalid Experience Id' })
+router.delete('/experience/:id', authenticate, async (req, res) => {
+  const id = req.params.id
+  if (!id) return res.status(400).send({ statusCode: 400, message: 'Invalid Experience Id' })
   // Delete the experience
   try {
     const profile = await Profile.findOne({ user: req.user.id })
-    const expIndex = profile.experience.findIndex(exp => exp._id == expId)
+    const expIndex = profile.experience.findIndex(exp => exp._id == id)
     if (expIndex === -1) return res.status(404).send({ statusCode: 404, message: 'Experience not found' })
     profile.experience.splice(expIndex, 1)
     await profile.save()
@@ -199,15 +199,15 @@ router.delete('/experience/:expId', authenticate, async (req, res) => {
   }
 })
 
-// @route - DELETE api/profile/education/:eduId
+// @route - DELETE api/profile/education/:id
 // @desc - Delete an education from array in profile
 // @access - Private (Header auth)
-router.delete('/education/:eduId', authenticate, async (req, res) => {
-  const eduId = req.params.eduId
-  if (!eduId) return res.status(400).send({ statusCode: 400, message: 'Invalid Education Id' })
+router.delete('/education/:id', authenticate, async (req, res) => {
+  const id = req.params.id
+  if (!id) return res.status(400).send({ statusCode: 400, message: 'Invalid Education Id' })
   try {
     const profile = await Profile.findOne({ user: req.user.id })
-    const eduIndex = profile.education.findIndex(edu => edu.id == eduId)
+    const eduIndex = profile.education.findIndex(edu => edu.id == id)
     if (eduIndex === -1) return res.status(404).send({ statusCode: 404, message: 'Education not found' })
     // Delete the education
     profile.education.splice(eduIndex, 1)

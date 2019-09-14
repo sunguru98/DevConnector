@@ -1,6 +1,8 @@
 import React from 'react'
 
 import NavBar from './components/NavBar'
+import DevelopersPage from './pages/DevelopersPage'
+import DeveloperDetailPage from './pages/DeveloperDetailPage'
 import LandingPage from './pages/LandingPage'
 import RegisterPage from './pages/RegisterPage'
 import LoginPage from './pages/LoginPage'
@@ -25,6 +27,8 @@ const App = () => {
         <PrivateRoute exact path='/edit-profile' component={CreateProfilePage} />
         <PrivateRoute exact path='/add-experience' component={AddExperience}  />
         <PrivateRoute exact path='/add-education' component={AddEducation} />
+        <Route exact path='/developers' component={DevelopersPage} />
+        <Route exact path='/developer/:developerName' component={DeveloperDetailPage} />
         <Redirect to='/' />
       </Switch>
     </div>
