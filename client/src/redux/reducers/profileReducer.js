@@ -6,7 +6,7 @@ const initialState = {
   profileLoading: true,
   allProfiles: [],
   profileError: null,
-  githubRepos: null
+  githubRepos: []
 }
 
 export default (state = initialState, action) => {
@@ -16,8 +16,8 @@ export default (state = initialState, action) => {
     case SET_GITHUB_REPOS: return { ...state, githubRepos: payload }
     case SET_USER_PROFILE: return { ...state, userProfile: payload }
     case SET_MULTI_PROFILES: return { ...state, allProfiles: [...payload] }
-    case SET_PROFILE_ERROR: return { ...state, profileError: payload }
-    case CLEAR_PROFILE: localStorage.removeItem('profile'); return { userProfile: null, allProfiles: [], profileError: null, profileLoading: true, githubRepos: null }
+    case SET_PROFILE_ERROR: return { ...state, profileError: payload, profileLoading: false }
+    case CLEAR_PROFILE: localStorage.removeItem('profile'); return { userProfile: null, allProfiles: [], profileError: null, profileLoading: true, githubRepos: [] }
     default: return state
   }
 }

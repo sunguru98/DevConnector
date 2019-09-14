@@ -14,8 +14,8 @@ import { selectProfileUserProfile, selectProfileProfileLoading } from '../redux/
 
 const DashboardPage = ({ history, user, getCurrentUserProfile, accessToken, profile, profileLoading, deleteProfileAttribute, deleteProfile }) => {
   useEffect(() => {
-    getCurrentUserProfile(accessToken)
-  }, [getCurrentUserProfile, accessToken])
+    getCurrentUserProfile(accessToken, history)
+  }, [getCurrentUserProfile, accessToken, history])
 
   return (
     !profile && profileLoading ?
@@ -56,7 +56,7 @@ const DashboardPage = ({ history, user, getCurrentUserProfile, accessToken, prof
                         <td>{ exp.company }</td>
                         <td className="hide-sm">{exp.title}</td>
                         <td className="hide-sm">
-                          <Moment format='DD/MM/YYYY'>{exp.from}</Moment> - {exp.current ? 'Present' : <Moment format='DD/MM/YYYY'>exp.to</Moment>}
+                          <Moment format='DD/MM/YYYY'>{exp.from}</Moment> - {exp.current ? 'Present' : <Moment format='DD/MM/YYYY'>{exp.to}</Moment>}
                         </td>
                         <td>
                           <button onClick={() => deleteProfileAttribute(accessToken, exp._id, 'exp')} className="btn btn-danger">

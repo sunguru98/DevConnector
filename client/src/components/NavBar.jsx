@@ -18,17 +18,16 @@ const NavBar = ({ user, accessToken, logoutUser, history }) => {
         <Link to='/'><i className="fas fa-code"></i> DevConnector</Link>
       </h1>
       { !user ? <ul>
-        <li><a href="profiles.html">Developers</a></li>
+        <li><NavLink to='/developers' activeClassName='active'>Developers</NavLink></li>
         <li><NavLink to='/register' activeClassName='active'>Register</NavLink></li>
         <li><NavLink to='/login' activeClassName='active'>Login</NavLink></li>
       </ul> : <ul>
+        <li><NavLink to='/developers' activeClassName='active'>Developers</NavLink></li>
         <li> 
           <span onClick={ handleClick }>
             <i className="fas fa-sign-out-alt"></i>{' '} <span className="hide-sm">Logout</span>
           </span>
         </li>
-        {/* <li><NavLink to='/register' activeClassName='active'>Register</NavLink></li>
-        <li><NavLink to='/login' activeClassName='active'>Login</NavLink></li> */}
       </ul> }
     </nav>
   )

@@ -51,5 +51,6 @@ export const logoutUser = (accessToken, history) => async dispatch => {
     dispatch({ type: LOGOUT })
     dispatch({ type: CLEAR_PROFILE })
     history.push('/')
+    dispatch(alertUser({ message: 'You have been logged out', alertType: 'danger'}))
   }
 }

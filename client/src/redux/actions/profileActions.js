@@ -1,9 +1,10 @@
 import actionTypes from '../actionTypes'
 import axios from 'axios'
 import { alertUser } from '../actions/alertActions'
-const { SET_USER_PROFILE, SET_PROFILE_ERROR, SET_MULTI_PROFILES, SET_GITHUB_REPOS } = actionTypes
+import { logoutUser } from '../actions/authActions'
+const { SET_USER_PROFILE, SET_PROFILE_ERROR, SET_MULTI_PROFILES, SET_GITHUB_REPOS, CLEAR_PROFILE } = actionTypes
 
-export const getCurrentUserProfile = accessToken => async dispatch => {
+export const getCurrentUserProfile = (accessToken, history) => async dispatch => {
   const configObj = { headers: { 'Authorization': accessToken } }
   try {
     const { data: { profile } } = await axios.get('/api/profile/me', configObj)
@@ -11,9 +12,13 @@ export const getCurrentUserProfile = accessToken => async dispatch => {
     localStorage.setItem('profile', JSON.stringify(profile))
     dispatch({ type: 'SET_PROFILE_LOADING', payload: true })
   } catch (err) {
-    const errors = err.response.data.message
-    localStorage.removeItem('profile')
-    dispatch({ type: SET_PROFILE_ERROR, payload: errors })
+    console.log(err.response.data)
+    if (err.response.data.statusCode === 401) dispatch(logoutUser(accessToken, history))
+    else {
+      const errors = err.response.data.message
+      localStorage.removeItem('profile')
+      dispatch({ type: SET_PROFILE_ERROR, payload: errors })
+    }
   }
 }
 
@@ -110,10 +115,12 @@ export const getAllProfiles = () => async dispatch => {
 
 export const getProfileByUserId = userId => async dispatch => {
   try {
+    dispatch({ type: CLEAR_PROFILE })
     dispatch({ type: 'SET_PROFILE_LOADING', payload: false })
     const { data: { profile } } = await axios.get(`/api/profile/user/${userId}`)
     dispatch({ type: SET_USER_PROFILE, payload: profile })
     dispatch({ type: 'SET_PROFILE_LOADING', payload: true })
+    return profile
   } catch (err) {
     dispatch(alertUser({ message: err.response.data.message, alertType: 'danger' }))
   }
@@ -122,10 +129,11 @@ export const getProfileByUserId = userId => async dispatch => {
 export const getGithubRepos = username => async dispatch => {
   try {
     dispatch({ type: 'SET_PROFILE_LOADING', payload: false })
-    const { data: { repos } } = await axios.get(`/github/${username}`)
+    const { data: { repos } } = await axios.get(`/api/profile/github/${username}`)
     dispatch({ type: SET_GITHUB_REPOS, payload: repos })
     dispatch({ type: 'SET_PROFILE_LOADING', payload: true })
   } catch (err) {
-    dispatch(alertUser({ message: err.response.data.message, alertType: 'danger' }))
+    const message = err.response.status === 404 ? 'Github repos not found' : err.response.data.message
+    dispatch(alertUser({ message, alertType: 'danger' }))
   }
 }

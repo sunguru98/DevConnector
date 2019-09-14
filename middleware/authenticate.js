@@ -21,7 +21,7 @@ const authenticate = async (req, res, next) => {
     next()
   } catch (err) {
     console.log(err.message)
-    return res.status(401).send({ errorCode: 401, message: 'Invalid Authentication' })
+    return res.status(401).send({ statusCode: 401, message: 'Invalid Authentication' })
   }
 }
 

@@ -104,10 +104,9 @@ router.get('/user/:userId', async (req, res) => {
 router.delete('/', authenticate, async (req, res) => {
   // Get the user id first
   const userId = req.user.id
-  // Delete the profile along with user
+  // Delete the profile
   const profile = await Profile.findOneAndDelete({ user: userId }).populate('user', ['name', 'avatar']).select('-__v')
   if (!profile) return res.status(404).send({ statusCode: 404, message: 'Profile does not exist' })
-  await User.findOneAndDelete({ _id: userId })
   res.send({ statusCode: 200, data: { profile }})
 })
 

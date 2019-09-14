@@ -1,4 +1,5 @@
 import React from 'react'
+import AlertList from '../components/AlertList'
 import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
@@ -12,6 +13,7 @@ const LandingPage = ({ user }) => {
       <Helmet><title>DevConnector - Home</title></Helmet>
       <div className="dark-overlay">
         <div className="landing-inner">
+          <AlertList/>
           <h1 className="x-large">Developer Connector</h1>
           <p className="lead">
             Create a developer profile/portfolio, share posts and get help from

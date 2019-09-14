@@ -28,7 +28,7 @@ const App = () => {
         <PrivateRoute exact path='/add-experience' component={AddExperience}  />
         <PrivateRoute exact path='/add-education' component={AddEducation} />
         <Route exact path='/developers' component={DevelopersPage} />
-        <Route exact path='/developer/:developerName' component={DeveloperDetailPage} />
+        <Route exact path='/developer/:developerId' component={DeveloperDetailPage} />
         <Redirect to='/' />
       </Switch>
     </div>
