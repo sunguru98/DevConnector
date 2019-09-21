@@ -18,9 +18,10 @@ const DashboardPage = ({ history, user, getCurrentUserProfile, accessToken, prof
   }, [getCurrentUserProfile, accessToken, history])
 
   return (
-    !profile && profileLoading ?
+    !profile && !profileLoading ?
       <Spinner /> :
        !profile ? <Redirect to='/create-profile' /> :
+       !profileLoading ? <Spinner /> :
         <section className="container">
           <Helmet><title>DevConnector - Dashboard</title></Helmet>
           <AlertList />

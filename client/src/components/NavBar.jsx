@@ -22,8 +22,9 @@ const NavBar = ({ user, accessToken, logoutUser, history }) => {
         <li><NavLink to='/register' activeClassName='active'>Register</NavLink></li>
         <li><NavLink to='/login' activeClassName='active'>Login</NavLink></li>
       </ul> : <ul>
+        <li><NavLink to='/posts' activeClassName='active'>Posts</NavLink></li>
         <li><NavLink to='/developers' activeClassName='active'>Developers</NavLink></li>
-        <li> 
+        <li>
           <span onClick={ handleClick }>
             <i className="fas fa-sign-out-alt"></i>{' '} <span className="hide-sm">Logout</span>
           </span>

@@ -20,7 +20,7 @@ const DeveloperDetailPage = ({ profile, githubRepos, getProfileByUserId, getGith
   }, [developerId, getProfileByUserId, getGithubRepos])
 
   return (
-    githubRepos.length === 0 ? <Spinner/> :
+    !profile && githubRepos.length === 0 ? <Spinner/> :
     <section className="container">
       <AlertList />
       <Link to='/developers' className="btn btn-light">Back To Profiles</Link>

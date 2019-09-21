@@ -7,10 +7,10 @@ const { SET_USER_PROFILE, SET_PROFILE_ERROR, SET_MULTI_PROFILES, SET_GITHUB_REPO
 export const getCurrentUserProfile = (accessToken, history) => async dispatch => {
   const configObj = { headers: { 'Authorization': accessToken } }
   try {
+    dispatch({ type: 'SET_PROFILE_LOADING', payload: false })
     const { data: { profile } } = await axios.get('/api/profile/me', configObj)
     dispatch({ type: SET_USER_PROFILE, payload: profile })
     localStorage.setItem('profile', JSON.stringify(profile))
-    dispatch({ type: 'SET_PROFILE_LOADING', payload: true })
   } catch (err) {
     console.log(err.response.data)
     if (err.response.data.statusCode === 401) dispatch(logoutUser(accessToken, history))
@@ -19,7 +19,7 @@ export const getCurrentUserProfile = (accessToken, history) => async dispatch =>
       localStorage.removeItem('profile')
       dispatch({ type: SET_PROFILE_ERROR, payload: errors })
     }
-  }
+  } finally { dispatch({ type: 'SET_PROFILE_LOADING', payload: true }) }
 }
 
 export const createProfile = (history, profileObj, accessToken, editMode = false) => async dispatch => {

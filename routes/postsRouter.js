@@ -5,8 +5,6 @@ const { check, validationResult } = require('express-validator')
 const authenticate = require('../middleware/authenticate')
 // models
 const Post = require('../models/Post')
-const User = require('../models/User')
-const Profile = require('../models/Profile')
 
 // @route - POST/api/posts
 // @desc - Create a post
@@ -29,28 +27,58 @@ router.post('/', authenticate, [check('text', 'Text is required').not().isEmpty(
 )
 
 // @route - GET/api/posts
-// @desc - Get all posts of the logged in user
+// @desc - Get all posts
 // @access - Private (Auth Header)
 router.get('/', authenticate, async (req, res) => {
   try {
+    const posts = await Post.find().select('-__v').sort('createdAt').populate('user', ['name', 'avatar'])
+    console.log(posts)
+    res.send({ statusCode: 200, posts })
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send({ statusCode: 500, message: 'Server Error' })
+  }
+})
+
+// @route - GET/api/posts/:postId
+// @desc - Get particular post
+// @access - Private (Auth Header)
+router.get('/:postId', authenticate, async (req, res) => {
+  try {
+    // Get the particular Post where the user property matches with the req.user's id
+    const post = await Post.findOne({ _id: req.params.postId }).select('-__v').populate('user', ['name', 'avatar'])
+    if (!post) return res.status(404).send({ statusCode: 404, message: 'Post not found' })
+    res.send({ statusCode: 200, post })
+  } catch (err) {
+    console.error(err)
+    if (err.name === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
+    res.status(500).send({ statusCode: 500, message: 'Server Error' })
+  }
+})
+
+// @route - GET/api/posts/me
+// @desc - Get all posts of the logged in user
+// @access - Private (Auth Header)
+router.get('/me', authenticate, async (req, res) => {
+  try {
     // Get all Posts where the user property matches with the req.user's id
-    const posts = await Post.find({ user: req.user.id }).select('-__v').sort({ 'createdAt': -1 })
-    res.send({ statusCode: 200, data: { posts } })
+    const posts = await Post.find({ user: req.user.id }).select('-__v').sort({ 'createdAt': -1 }).populate('user', ['name', 'avatar'])
+    res.send({ statusCode: 200, posts })
   } catch (err) {
     console.error(err)
     res.status(500).send({ statusCode: 500, message: 'Server Error' })
   }
 })
 
-// @route - GET/api/posts/:postId
+// @route - GET/api/posts/me/:postId
 // @desc - Get particular post of that user
 // @access - Private (Auth Header)
-router.get('/:postId', authenticate, async (req, res) => {
+router.get('/me/:postId', authenticate, async (req, res) => {
   try {
     // Get the particular Post where the user property matches with the req.user's id
     const post = await Post.findOne({ user: req.user.id, _id: req.params.postId }).select('-__v')
     if (!post) return res.status(404).send({ statusCode: 404, message: 'Post not found' })
-    res.send({ statusCode: 200, data: { post } })
+    res.send({ statusCode: 200, post })
   } catch (err) {
     console.error(err)
     if (err.name === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
@@ -66,7 +94,7 @@ router.delete('/:postId', authenticate, async (req, res) => {
     // Get the particular Post where the user property matches with the req.user's id and delete it
     const post = await Post.findOneAndDelete({ user: req.user.id, _id: req.params.postId }).select('-__v')
     if (!post) return res.status(404).send({ statusCode: 404, message: 'Post not found' })
-    res.send({ statusCode: 200, data: { post } })
+    res.send({ statusCode: 200, post })
   } catch (err) {
     console.error(err)
     if (err.name === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
@@ -90,7 +118,7 @@ router.put('/like/:postId', authenticate, async (req, res) => {
       await post.save()
     }
     // Send back the updated post
-    res.send({ statusCode: 200, data: { post } })
+    res.send({ statusCode: 200, post })
   } catch (err) {
     console.error(err)
     if (err.name === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
@@ -112,7 +140,7 @@ router.delete('/like/:postId', authenticate, async (req, res) => {
       await post.save()
     } else return res.status(404).send({ statusCode: 404, message: 'Post has not been liked by the user' })
     // Send back the updated post
-    res.send({ statusCode: 200, data: { post } })
+    res.send({ statusCode: 200, post })
   } catch (err) {
     console.error(err)
     if (err.name === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
@@ -138,7 +166,7 @@ router.put('/comment/:postId', authenticate, check('text', 'Text is required').n
       await post.save()
     }
     // Send back the updated post
-    res.send({ statusCode: 200, data: { post } })
+    res.send({ statusCode: 200, post })
   } catch (err) {
     console.error(err)
     if (err.name === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
@@ -160,7 +188,7 @@ router.delete('/comment/:postId/:commentId', authenticate, async (req, res) => {
       await post.save()
     } else return res.status(404).send({ statusCode: 404, message: 'No comments found' })
     // Send back the updated post
-    res.send({ statusCode: 200, data: { post } })
+    res.send({ statusCode: 200, post })
   } catch (err) {
     console.error(err)
     if (err.name === 'CastError') return res.status(400).send({ statusCode: 400, message: 'Invalid Id. Please try again' })
