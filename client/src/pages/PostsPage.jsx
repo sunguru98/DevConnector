@@ -96,11 +96,11 @@ const PostsPage = ({ accessToken, getAllPosts, createPost, allPosts, deletePostB
 PostsPage.propTypes = {
   getAllPosts: PropTypes.func.isRequired,
   createPost: PropTypes.func.isRequired,
+  deletePostById: PropTypes.func.isRequired,
+  likePostById: PropTypes.func.isRequired,
   allPosts: PropTypes.array.isRequired,
   postLoading: PropTypes.bool.isRequired,
   accessToken: PropTypes.string.isRequired,
-  deletePostById: PropTypes.func.isRequired,
-  likePostById: PropTypes.func.isRequired
 }
 
 const mapStateToProps = createStructuredSelector({

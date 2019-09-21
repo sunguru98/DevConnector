@@ -20,6 +20,21 @@ export const getAllPosts = (accessToken, history, userId) => async dispatch => {
   }
 }
 
+export const getPostById = (accessToken, history, postId) => async dispatch => {
+  const configObj = { headers: {'Authorization': accessToken } }
+  try {
+    dispatch({ type: 'SET_POST_LOADING', payload: false })
+    dispatch({ type: CLEAR_POST })
+    const { data: { post } } = await axios.get(`/api/posts/${postId}`, configObj)
+    dispatch({ type: SET_POST, payload: post })
+  } catch (err) {
+    if (err.response.data.statusCode === 401) return dispatch(logoutUser(accessToken, history))
+    const errorMessage = err.response.data.message
+    dispatch({ type: SET_POST_ERROR, payload: errorMessage })
+    dispatch(alertUser({ message: errorMessage, alertType: 'danger' }))
+  } finally { dispatch({ type: 'SET_POST_LOADING', payload: true }) }
+}
+
 export const createPost = (accessToken, text, history) => async dispatch => {
   const configObj = { headers: { 'Authorization': accessToken }}
   try {
@@ -77,4 +92,37 @@ export const dislikePostById = (accessToken, postId, user, history) => async dis
     dispatch({ type: SET_POST_ERROR, payload: errorMessage })
     dispatch(alertUser({ message: errorMessage, alertType: 'danger' }))  
   }
+}
+
+export const postComment = (accessToken, history, postId, text) => async dispatch => {
+  const configObj = { headers: { 'Authorization': accessToken }}
+  try {
+    dispatch({ type: 'SET_POST_LOADING', payload: false })
+    const { data: { post } } = await axios.put(`/api/posts/comment/${postId}`, { text }, configObj)
+    dispatch({ type: SET_POST, payload: post })
+    dispatch(alertUser({ message: 'Comment added successfully', alertType: 'success' }))
+  } catch (err) {
+    if (err.response.data.statusCode === 401) return dispatch(logoutUser(accessToken, history))
+    const errorMessage = err.response.data.message
+    if (typeof errorMessage !== String) 
+      errorMessage.forEach(message => dispatch(alertUser({ message: message.msg, alertType: 'danger' })))
+    else
+      dispatch(alertUser({ message: errorMessage, alertType: 'danger' }))
+    dispatch({ type: SET_POST_ERROR, payload: errorMessage })
+  } finally { dispatch({ type: 'SET_POST_LOADING', payload: true })}
+}
+
+export const deleteComment = (accessToken, history, commentId, postId) => async dispatch => {
+  const configObj = { headers: { 'Authorization': accessToken } }
+  try {
+    dispatch({ type: 'SET_POST_LOADING', payload: false })
+    const { data: { post } } = await axios.delete(`/api/posts/comment/${postId}/${commentId}`, configObj)
+    dispatch({ type: SET_POST, payload: post })
+    dispatch(alertUser({ message: 'Comment deleted succesfully', alertType: 'success' }))
+  } catch (err) {
+    if (err.response.data.statusCode === 401) return dispatch(logoutUser(accessToken, history))
+    const errorMessage = err.response.data.message
+    dispatch(alertUser({ message: errorMessage, alertType: 'danger' }))
+    dispatch({ type: SET_POST_ERROR, payload: errorMessage })
+  } finally { dispatch({ type: 'SET_POST_LOADING', payload: true }) }
 }

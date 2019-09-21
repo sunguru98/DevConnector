@@ -155,7 +155,7 @@ router.put('/comment/:postId', authenticate, check('text', 'Text is required').n
   if (!errors.isEmpty()) return res.status(400).send({ statusCode: 400, message: errors.array() })
   try {
     // Get the particular Post
-    const post = await Post.findById(req.params.postId)
+    const post = await Post.findById(req.params.postId).populate('user', ['name', 'avatar'])
     if (!post) return res.status(404).send({ statusCode: 404, message: 'Post not found' })
     // Create the comment object
     const commentObject = { user: req.user.id, name: req.user.name, avatar: req.user.avatar, text: req.body.text }
@@ -179,7 +179,7 @@ router.put('/comment/:postId', authenticate, check('text', 'Text is required').n
 router.delete('/comment/:postId/:commentId', authenticate, async (req, res) => {
   try {
     // Get the particular Post
-    const post = await Post.findById(req.params.postId)
+    const post = await Post.findById(req.params.postId).populate('user', ['name', 'avatar'])
     if (!post) return res.status(404).send({ statusCode: 404, message: 'Post not found' })
     // Delete the comment by filtering it only if there is a comment object of that user ..
     if (post.comments.find(comment => comment.user.toString() === req.user.id && comment._id.toString() === req.params.commentId)) {
