@@ -113,7 +113,7 @@ export const getAllProfiles = () => async dispatch => {
   }
 }
 
-export const getProfileByUserId = userId => async dispatch => {
+export const getProfileByUserId = (userId, history) => async dispatch => {
   try {
     dispatch({ type: CLEAR_PROFILE })
     dispatch({ type: 'SET_PROFILE_LOADING', payload: false })
@@ -122,6 +122,10 @@ export const getProfileByUserId = userId => async dispatch => {
     dispatch({ type: 'SET_PROFILE_LOADING', payload: true })
     return profile
   } catch (err) {
+    if (err.response.data.statusCode === 404) {
+      history.push('/posts')
+      return dispatch(alertUser({ message: 'Profile not found', alertType: 'danger' }))
+    }
     dispatch(alertUser({ message: err.response.data.message, alertType: 'danger' }))
   }
 }

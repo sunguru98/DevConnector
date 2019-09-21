@@ -9,15 +9,15 @@ import { connect } from 'react-redux'
 import Spinner from '../components/Spinner'
 import AlertList from '../components/AlertList'
 
-const DeveloperDetailPage = ({ profile, githubRepos, getProfileByUserId, getGithubRepos, match: { params: { developerId } } }) => {
+const DeveloperDetailPage = ({ history, profile, githubRepos, getProfileByUserId, getGithubRepos, match: { params: { developerId } } }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const profileObj = await getProfileByUserId(developerId)
-      getGithubRepos(profileObj.githubUserName)
+      const profileObj = await getProfileByUserId(developerId, history)
+      if (profileObj) getGithubRepos(profileObj.githubUserName)
     }
     fetchData()
-  }, [developerId, getProfileByUserId, getGithubRepos])
+  }, [developerId, getProfileByUserId, getGithubRepos, history])
 
   return (
     !profile && githubRepos.length === 0 ? <Spinner/> :

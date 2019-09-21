@@ -31,8 +31,7 @@ router.post('/', authenticate, [check('text', 'Text is required').not().isEmpty(
 // @access - Private (Auth Header)
 router.get('/', authenticate, async (req, res) => {
   try {
-    const posts = await Post.find().select('-__v').sort('createdAt').populate('user', ['name', 'avatar'])
-    console.log(posts)
+    const posts = await Post.find().select('-__v').sort('-createdAt').populate('user', ['name', 'avatar'])
     res.send({ statusCode: 200, posts })
   } catch (err) {
     console.error(err.message)
@@ -62,7 +61,7 @@ router.get('/:postId', authenticate, async (req, res) => {
 router.get('/me', authenticate, async (req, res) => {
   try {
     // Get all Posts where the user property matches with the req.user's id
-    const posts = await Post.find({ user: req.user.id }).select('-__v').sort({ 'createdAt': -1 }).populate('user', ['name', 'avatar'])
+    const posts = await Post.find({ user: req.user.id }).select('-__v').sort('-createdAt').populate('user', ['name', 'avatar'])
     res.send({ statusCode: 200, posts })
   } catch (err) {
     console.error(err)

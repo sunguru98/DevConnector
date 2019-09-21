@@ -7,17 +7,17 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import Moment from 'react-moment'
 import { createStructuredSelector } from 'reselect'
-import { getAllPosts, createPost } from '../redux/actions/postActions'
+import { getAllPosts, createPost, deletePostById, likePostById, dislikePostById } from '../redux/actions/postActions'
 import { selectAuthAccessToken, selectAuthUser } from '../redux/selectors/authSelectors'
 import { selectPostAllPosts, selectPostPostLoading } from '../redux/selectors/postSelectors'
 
-const PostsPage = ({ accessToken, getAllPosts, createPost, allPosts, postLoading, history, user }) => {
+const PostsPage = ({ accessToken, getAllPosts, createPost, allPosts, deletePostById, likePostById, dislikePostById, postLoading, history, user }) => {
 
   const [formState, setFormState] = useState({ text: '' })
 
   useEffect(() => {
-    getAllPosts(accessToken, history)
-  }, [getAllPosts])
+    getAllPosts(accessToken, history, user._id)
+  }, [getAllPosts, accessToken, history, user._id])
 
   const handleChange = e => setFormState({ ...formState, [e.target.name]: e.target.value })
   const handleSubmit = e => {
@@ -70,17 +70,18 @@ const PostsPage = ({ accessToken, getAllPosts, createPost, allPosts, postLoading
              <p className="post-date">
                 Posted on <Moment format='DD/MM/YYYY'>{post.createdAt}</Moment>
             </p>
-            <button type="button" className="btn btn-light">
+            <button disabled={post.isLiked} onClick={ () => likePostById(accessToken, post._id, user, history) } className={`btn btn-${!post.isLiked ? 'light' : 'primary'}`}>
               <i className="fas fa-thumbs-up"></i>
               <span>{post.likes.length}</span>
             </button>
-            <button type="button" className="btn btn-light">
+            <button onClick={() => dislikePostById(accessToken, post._id, user, history)} disabled={!post.isLiked} className={`btn btn-${post.isLiked ? 'light' : 'danger'}`}>
               <i className="fas fa-thumbs-down"></i>
             </button>
-            <a href="post.html" className="btn btn-primary">
+            <Link to={`/post/${post._id}`} className="btn btn-primary">
               Discussion <span className='comment-count'>{post.comments.length}</span>
-            </a>
+            </Link>
             { user._id === post.user._id ? <button
+              onClick={() => deletePostById(accessToken, post._id, history)}
               type="button"
               className="btn btn-danger">
               <i className="fas fa-times"></i>
@@ -97,7 +98,9 @@ PostsPage.propTypes = {
   createPost: PropTypes.func.isRequired,
   allPosts: PropTypes.array.isRequired,
   postLoading: PropTypes.bool.isRequired,
-  accessToken: PropTypes.string.isRequired
+  accessToken: PropTypes.string.isRequired,
+  deletePostById: PropTypes.func.isRequired,
+  likePostById: PropTypes.func.isRequired
 }
 
 const mapStateToProps = createStructuredSelector({
@@ -107,4 +110,4 @@ const mapStateToProps = createStructuredSelector({
   user: selectAuthUser
 })
 
-export default connect(mapStateToProps, { getAllPosts, createPost })(PostsPage)
+export default connect(mapStateToProps, { getAllPosts, createPost, deletePostById, likePostById, dislikePostById })(PostsPage)
