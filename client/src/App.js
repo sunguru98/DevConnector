@@ -15,6 +15,7 @@ import AddExperience from './pages/AddExperience'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import PrivateRoute from './components/PrivateRoute'
 import NavBar from './components/NavBar'
+import NotFoundPage from './pages/NotFoundPage'
 
 const App = () => {
   return (
@@ -33,7 +34,8 @@ const App = () => {
         <PrivateRoute exact path='/post/:postId' component={PostDetailPage} />
         <Route exact path='/developers' component={DevelopersPage} />
         <Route exact path='/developer/:developerId' component={DeveloperDetailPage} />
-        <Redirect to='/' />
+        <Route exact path='/not-found' component={NotFoundPage} />
+        <Redirect to='/not-found' />
       </Switch>
     </div>
   )
