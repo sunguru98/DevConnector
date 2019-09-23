@@ -11,15 +11,22 @@ import { Redirect } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 const CreateProfilePage = ({ accessToken, createProfile, history, match: { path }, profile, profileLoading }) => {
-  const [formData, setFormData] = useState(path === '/create-profile' ? {
+  const profileData = {
     company: '', website: '', location: '', bio: '', position: '', githubUserName: '', skills: '', 
-      youtube: '', facebook: '', twitter: '', instagram: '', linkedIn: ''
-  } : {...profile})
+      youtube: '', facebook: '', twitter: '', github: '', linkedIn: ''
+  }
+  
+  const [formData, setFormData] = useState(profile ? {
+    company: profile.company, website: profile.website, location: profile.location, bio: profile.bio, position: profile.position, githubUserName: profile.githubUserName, skills: profile.skills, 
+      youtube: profile.social.youtube, facebook: profile.social.facebook, twitter: profile.social.twitter, github: profile.social.github, linkedIn: profile.social.linkedIn
+  }: profileData)
 
-  const [socialNetworkState, setSocialNetworkState] = useState(false)
+  const socialSwitch = formData.github.length || formData.youtube.length || formData.linkedIn.length || formData.twitter.length ? true : false
+
+  const [socialNetworkState, setSocialNetworkState] = useState(socialSwitch)
 
   const { company, website, location, bio, position, githubUserName, skills, 
-    youtube, facebook, twitter, instagram, linkedIn } = formData
+    youtube, facebook, twitter, github, linkedIn } = formData
 
   const handleChange = event => setFormData({ ...formData, [event.target.name]: event.target.value })
   const handleSubmit = event => {
@@ -89,7 +96,7 @@ const CreateProfilePage = ({ accessToken, createProfile, history, match: { path 
 
         <div className="my-2">
           <button onClick={() => setSocialNetworkState(!socialNetworkState)} type="button" className={`btn btn-${ !socialNetworkState ? 'light' : 'primary' }`}>
-            {!socialNetworkState ? 'Add ': 'Remove '} Social Network Links
+            {!socialNetworkState ? 'Add ': 'Hide '} Social Network Links
           </button>
           <span>Optional</span>
         </div>
@@ -116,8 +123,8 @@ const CreateProfilePage = ({ accessToken, createProfile, history, match: { path 
             </div>
 
             <div className="form-group social-input">
-              <i className="fab fa-instagram fa-2x"></i>
-              <input value={instagram} onChange={ handleChange } type="text" placeholder="Instagram URL" name="instagram" />
+              <i className="fab fa-github fa-2x"></i>
+              <input value={github} onChange={ handleChange } type="text" placeholder="Github URL" name="github" />
             </div>
           </Fragment>: null
         }

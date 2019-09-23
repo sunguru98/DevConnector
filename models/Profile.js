@@ -41,7 +41,7 @@ const profileSchema = new mongoose.Schema({
     twitter: String,
     facebook: String,
     linkedIn: String,
-    instagram: String
+    github: String
   }
 }, { timestamps: true });
 

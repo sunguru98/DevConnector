@@ -6,7 +6,6 @@ const authenticate = require('../middleware/authenticate')
 
 // Models
 const Profile = require('../models/Profile')
-const User = require('../models/User')
 
 // @route - POST api/profile
 // @desc - Create current user's profile
@@ -21,14 +20,14 @@ router.post('/', authenticate,
     
     // Destructuring all the body fields of req object
     const { company, website, location, bio, position, githubUserName, skills, 
-            youtube, facebook, twitter, instagram, linkedIn } = req.body
+            youtube, facebook, twitter, github, linkedIn } = req.body
   
     // Building profile object
     const profile = { company, website, 
                       location, bio, 
                       position, githubUserName, 
                       user: req.user.id,
-                      social: { youtube, facebook, twitter, instagram, linkedIn } 
+                      social: { youtube, facebook, twitter, github, linkedIn } 
                     }
     profile.skills = skills.includes(',') ? skills.split(',').map(skill => skill.trim()) : skills
     try {
