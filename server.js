@@ -20,11 +20,10 @@ app.use('/api/posts', require('./routes/postsRouter'))
 app.use('/api/auth', require('./routes/authRouter'))
 
 // Serve react (static)
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, "client", "build")))
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
-  })
-}
+app.use(express.static(path.join(__dirname, "client", "build")))
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+})
+
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))

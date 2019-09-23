@@ -8,7 +8,7 @@
     "server": "nodemon server",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "author": "Sundeep Charan Ramkumar",
   "license": "ISC",
@@ -25,5 +25,8 @@
   "devDependencies": {
     "concurrently": "^4.1.2",
     "nodemon": "^1.19.1"
+  },
+  "engines": {
+    "node": "10.15.3"
   }
 }
