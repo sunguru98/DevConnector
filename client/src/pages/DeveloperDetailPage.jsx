@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Link } from 'react-router-dom'
 import { selectProfileGithubRepos, selectProfileUserProfile } from '../redux/selectors/profileSelectors'
-import { getProfileByUserId, getGithubRepos } from '../redux/actions/profileActions'
+import { getProfileByUserId, getGithubRepos, clearProfile } from '../redux/actions/profileActions'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import Spinner from '../components/Spinner'
 import AlertList from '../components/AlertList'
 
-const DeveloperDetailPage = ({ history, profile, githubRepos, getProfileByUserId, getGithubRepos, match: { params: { developerId } } }) => {
+const DeveloperDetailPage = ({ history, profile, githubRepos, getProfileByUserId, getGithubRepos, clearProfile, match: { params: { developerId } } }) => {
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,11 +19,16 @@ const DeveloperDetailPage = ({ history, profile, githubRepos, getProfileByUserId
     fetchData()
   }, [developerId, getProfileByUserId, getGithubRepos, history])
 
+  const handleClick = async () => {
+    await clearProfile()
+    history.push('/developers')
+  }
+
   return (
     !profile && githubRepos.length === 0 ? <Spinner/> :
     <section className="container">
       <AlertList />
-      <Link to='/developers' className="btn btn-light">Back To Profiles</Link>
+      <button onClick={ handleClick } className="btn btn-light">Back To Profiles</button>
       <div className="profile-grid my-1">
         <div className="profile-top bg-primary p-2">
           <img
@@ -133,4 +138,4 @@ const mapStateToProps = createStructuredSelector({
   profile: selectProfileUserProfile
 })
 
-export default connect(mapStateToProps, { getProfileByUserId, getGithubRepos })(DeveloperDetailPage)
+export default connect(mapStateToProps, { getProfileByUserId, getGithubRepos, clearProfile })(DeveloperDetailPage)

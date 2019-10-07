@@ -15,10 +15,10 @@ export const registerUser = ({ name, email, password }) => async dispatch => {
     localStorage.removeItem('user')
     localStorage.removeItem('accessToken')
     const errors = err.response.data.message
-    if (typeof errors === Object) errors.forEach(err => dispatch(alertUser({ message: err.msg, alertType: 'danger' })))
+    if (Array.isArray(errors)) errors.forEach(err => dispatch(alertUser({ message: err.msg, alertType: 'danger' })))
     else dispatch(alertUser({ message: errors, alertType: 'danger' }))
     dispatch({ type: REGISTER_FAILURE })
-  } 
+  }
 }
 
 export const loginUser = ({ email, password }) => async dispatch => {

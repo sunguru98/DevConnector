@@ -22,6 +22,8 @@ export const getCurrentUserProfile = (accessToken, history) => async dispatch =>
   } finally { dispatch({ type: 'SET_PROFILE_LOADING', payload: true }) }
 }
 
+export const clearProfile = () => async dispatch => dispatch({ type: CLEAR_PROFILE })
+
 export const createProfile = (history, profileObj, accessToken, editMode = false) => async dispatch => {
   const configObj = { headers: { 'Authorization': accessToken } }
   try {

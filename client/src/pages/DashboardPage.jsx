@@ -18,7 +18,7 @@ const DashboardPage = ({ history, user, getCurrentUserProfile, accessToken, prof
   }, [getCurrentUserProfile, accessToken, history])
 
   return (
-    !profile ?
+    !profile & !profileLoading ?
       <Spinner /> :
        !profile ? <Redirect to='/create-profile' /> :
        !profileLoading ? <Spinner /> :

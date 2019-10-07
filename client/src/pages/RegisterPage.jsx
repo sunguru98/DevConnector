@@ -18,9 +18,8 @@ const RegisterPage = ({ alertUser, registerUser, user, history }) => {
     password: '',
     cPassword: ''
   })
-
+  const { password, cPassword, name, email } = formState
   const handleSubmit = event => {
-    const { password, cPassword, name, email } = formState
     event.preventDefault()
     if (password !== cPassword) {
       alertUser({message: 'Passwords do not match', alertType: 'danger' })
@@ -29,12 +28,11 @@ const RegisterPage = ({ alertUser, registerUser, user, history }) => {
     else {
       registerUser({ name, email, password })
       if (user) history.push('/dashboard')
-      else setFormState({ ...formState, email: '', password: '', cPassword: '' }) 
+      else setFormState({ ...formState, password: '', cPassword: '' }) 
     }
   }
 
   const handleChange = event => setFormState({...formState, [event.target.name]: event.target.value })
-
   return (
     user ? <Redirect to='/dashboard' /> :
     <section className="container">
@@ -44,10 +42,10 @@ const RegisterPage = ({ alertUser, registerUser, user, history }) => {
       <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
       <form className="form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <input onChange={handleChange} type="text" placeholder="Name" name="name" required />
+          <input onChange={handleChange} type="text" placeholder="Name" name="name" required value={name} />
         </div>
         <div className="form-group">
-          <input onChange={handleChange} type="email" placeholder="Email Address" name="email" />
+          <input onChange={handleChange} type="email" placeholder="Email Address" name="email" value={email} />
           <small className="form-text"
             >This site uses Gravatar so if you want a profile image, use a
             Gravatar email</small>
@@ -57,6 +55,7 @@ const RegisterPage = ({ alertUser, registerUser, user, history }) => {
             type="password"
             placeholder="Password"
             name="password"
+            value={password}
           />
         </div>
         <div className="form-group">
@@ -64,6 +63,7 @@ const RegisterPage = ({ alertUser, registerUser, user, history }) => {
             type="password"
             placeholder="Confirm Password"
             name="cPassword"
+            value={cPassword}
           />
         </div>
         <input type="submit" className="btn btn-primary" value="Register" />
